@@ -32,3 +32,12 @@ Using the bridge directly:
 - `L2MessageBridge.updateL2Bridges(uint256[] memory toChainIDs)` - updates the L1 bridge and trigger a root sync to a list of chains.  Will be removed when the need for L1 help is eliminated.
 
 Note on Brownie: This project uses Brownie scripts. Unfortunately I found out that it's not trivial to use Optimism's solcjs fork with Brownie.  I made it work but still need to clean it up before submitting pull requests to eth-brownie and to py-solc-x.
+
+## Bugs encountered during development
+
+- Arbitrum - the transaction receipts for L1->L2 messages (retryable tickets) shows the wrong destination address.  This confuses scripts, and the explorer also provides bogus data for such transactions.  The actual transaction is correct - only the receipt is bad.  Reported to Arbitrum.
+- Optimism - batch submitter and message relayer have been unstable, making message delivery unreliable.  Reported to Optimism.
+- Brownie (and solcx which it uses) had multiple problems working with OVM:
+  - No support for solcjs, only solc.  Incompatible arguments, etc.  Fixed with a wrapper.
+  - Long json output is truncted because solcx uses python's subprocess.Popen().communicate() which is limited to max pipe block size (64k) and does't support multiple reads.  OVM compilations tend to be larger and hit that limit.  Fixed by replacing the pipe with a temporary file.  PR to follow.
+  - Brownie makes it difficult to hold concurrent connections to multiple chains in the same process due to using module-wide globals.  Not fixed.  Requires a design change.  As a workaround I used a separate process for each chain.
