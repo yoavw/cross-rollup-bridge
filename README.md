@@ -1,5 +1,7 @@
 # cross-rollup-bridge
 
+[Demo video - set youtube quality to HD](https://youtu.be/HgE6s8-sa_A)
+
 This hack was developed for the ETHGlobal Scaling Ethereum hackathon, to demonstrate cross-rollup transactions at O(1) L1 gas cost.
 
 It currently supports Arbitrum and Optimism, but can be easily extended to support any rollup.
